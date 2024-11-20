@@ -3,15 +3,27 @@ import { useRouter } from "next/router"
 import { cloneElement, ReactElement } from "react"
 
 interface ActiveLinkProps extends LinkProps {
-   children: ReactElement
+   children: ReactElement;
+   shouldMatchExactHref?: boolean
 }
 
-export function ActiveLink({ children, ...rest }: ActiveLinkProps) {
+export function ActiveLink({ children, shouldMatchExactHref = false, ...rest }: ActiveLinkProps) {
    const { asPath } = useRouter()
 
    let isActive = false
 
-   if (asPath === rest.href || asPath === rest.as) {
+   // Verificar se a rota que o usuário está é o mesmo do fornecido no código
+   // if (asPath === rest.href || asPath === rest.as) {
+   //    isActive = true
+   // }
+
+   // Verificar se a rota que o usuário está é o parecido com o fornecido no código
+   if (shouldMatchExactHref && (asPath === rest.href || asPath === rest.as)) {
+      isActive = true
+   }
+
+   // Verificar se o shouldMatchExactHref é true e se o aspath começa com href
+   if (!shouldMatchExactHref && (asPath.startsWith(String(rest.href)) || asPath.startsWith(String(rest.as)))) {
       isActive = true
    }
 
