@@ -4,12 +4,18 @@ import { SideBar } from "@/components/SideBar"
 import { RiAddLine, RiPencilLine } from "react-icons/ri"
 import { Pagination } from "@/components/Pagination"
 import Link from "next/link"
+import { useEffect } from "react"
 
 export default function UserList() {
    const isWideVersion = useBreakpointValue({
       base: false,
       lg: true
    })
+
+   useEffect(() => {
+      // Chamada para a api
+      fetch('http://localhost:3000/api/users').then(response => response.json()).then(data => console.log(data))
+   }, [])
 
    return (
       <Box>
@@ -30,7 +36,6 @@ export default function UserList() {
 
                   <Link href={'/users/create'} passHref>
                      <Button
-                        as={'a'}
                         size={'sm'}
                         fontSize={'small'}
                         colorScheme="pink"
