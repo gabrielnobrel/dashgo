@@ -22,7 +22,7 @@ export function makeServer() {
                return `User ${i + 1}`
             },
             email() {
-               faker.internet.email().toLowerCase() // criando um email aleatório
+               return faker.internet.email().toLowerCase() // criando um email aleatório
             },
             createdAt() {
                return faker.date.recent({ days: 10 }) //pegando as data dos últimos de dias
@@ -31,12 +31,12 @@ export function makeServer() {
       },
 
       seeds(server) {
-         server.createList('user', 2)
+         server.createList('user', 10) // Criando os usuários com as infomrções do factories
       },
 
       routes() {
          this.namespace = 'api' // utilizar o api para chamar as rotas abaixo
-         this.timing = 750
+         this.timing = 750 // Esperar para responder
 
          this.get('/users')
          this.post('/users')
