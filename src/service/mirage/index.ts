@@ -1,4 +1,4 @@
-import { createServer, Factory, Model, Response } from 'miragejs'
+import { createServer, Factory, Model, Response, ActiveModelSerializer } from 'miragejs'
 import { faker } from '@faker-js/faker';
 
 type User = {
@@ -9,6 +9,10 @@ type User = {
 
 export function makeServer() {
    const server = createServer({
+      serializers: {
+         application: ActiveModelSerializer
+      },
+
       // Dados que serão armazenados no banco de dados fictícios:
       models: {
          // O partial serve ´para indicar que o User pode conter alguns campos, mas não todos
@@ -50,8 +54,9 @@ export function makeServer() {
             const users = this.serialize(schema.all('user')).users.slice(pageStart, pageEnd)
 
             return new Response(200, { 'x-total-count': String(total) }, { users })
-
          })
+
+         this.get('/users/:id')
          this.post('/users')
 
          this.namespace = '' // voltar ao estado original

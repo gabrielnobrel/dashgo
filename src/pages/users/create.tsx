@@ -7,6 +7,8 @@ import { Input } from "@/components/Form/input"
 import { Header } from "@/components/Header"
 import { SideBar } from "@/components/SideBar"
 import Link from "next/link"
+import { useMutation } from "@tanstack/react-query"
+import { api } from "@/service/api"
 
 type CreateUserFormData = {
    name: string;
@@ -26,14 +28,28 @@ const createUserFormSchema = yup.object().shape({
 })
 
 export default function CreateUser() {
+   const createUser = useMutation<any, Error, CreateUserFormData>(
+      mutationFn: async (user: CreateUserFormData) => {
+         const response = await api.post('users', {
+            user: {
+               ...user,
+               created_at: new Date(),
+            },
+         });
+
+         return response.data.user;
+      },
+   )
+
    const { register, handleSubmit, formState } = useForm({ resolver: yupResolver(createUserFormSchema) })
 
    const { errors } = formState
 
    const handleCreateUser: SubmitHandler<CreateUserFormData> = async (values) => {
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      // await new Promise(resolve => setTimeout(resolve, 2000))
 
-      console.log(values)
+      // console.log(values)
+      await createUser.mutateAsync(values)
    }
 
    return (
@@ -63,7 +79,7 @@ export default function CreateUser() {
 
                <VStack spacing={'8'}>
                   <SimpleGrid minChildWidth={'240px'} spacing={['6', '8']} w={'100%'}>
-                     <Input name="name" label="Nome Completo" error={errors.name} {...register('name')} />
+                     <Input name="name" type='name' label="Nome Completo" error={errors.name} {...register('name')} />
                      <Input name="email" type="email" label="E-mail" error={errors.email} {...register('email')} />
                   </SimpleGrid>
 
